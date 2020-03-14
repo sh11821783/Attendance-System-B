@@ -1,3 +1,27 @@
 <% provide(:title, 'Sign up') %>
 <h1>アカウント情報の更新</h1>
-<p>このページでは必要な項目を入力して、ユーザーを新規作成します。</p>
+
+<div class="row">
+  <div class="col-md-6 col-md-offset-3">
+    <%= form_with(model: @user, local: true) do |f| %>
+      <%= render 'shared/error_messages' %> <!--app/views/shared/_error_messages.html.erbをrenderする-->
+      
+      <%= f.label :name, class: "label-signup"%> <!--名前-->
+      <%= f.text_field :name, class: "form-control"  %>
+
+      <%= f.label :email, class: "label-signup"  %> <!--メールアドレス-->
+      <%= f.email_field :email, class: "form-control" %>
+      
+      <%= f.label :affiliation, class: "label-signup" %> <!--所属-->
+      <%= f.text_field :affiliation, class: "form-control" %>
+
+      <%= f.label :password, class: "label-signup" %> <!--パスワード-->
+      <%= f.password_field :password, class: "form-control" %>
+
+      <%= f.label :password_confirmation, "Confirmation", class: "label-signup" %> <!--パスワード確認-->
+      <%= f.password_field :password_confirmation, class: "form-control" %>
+
+      <%= f.submit "編集", class: "btn btn-primary btn-block btn-signup" %>
+    <% end %>
+  </div>
+</div>
