@@ -8,6 +8,7 @@ class SessionsController < ApplicationController
     if user && user.authenticate(params[:session][:password])
       # ログイン後にユーザー情報ページにリダイレクトします。
       log_in user # sessions_helper.rbにlog_inメソッドを定義してある。log_in(user)でもok。
+      params[:session][:remember_me] == '1' ? remember(user) : forget(user)
       redirect_to user # redirect_to(user)でもok。
     else
       # ここにはエラーメッセージ用のflashを入れます。
@@ -19,7 +20,8 @@ class SessionsController < ApplicationController
   end
   
   def destroy
-    log_out # app/helpers/sessions_helper.rbに定義してある。
+    # ログイン中の場合のみログアウト処理を実行します。
+    log_out if logged_in? # log_out　⇨　app/helpers/sessions_helper.rbに定義してある。
     flash[:success] = 'ログアウトしました。'
     redirect_to root_url
   end

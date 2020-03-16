@@ -1,5 +1,5 @@
 <% provide(:title, 'Sign up') %>
-<h1>アカウント情報の更新</h1>
+<h1>アカウント情報の作成</h1>
 
 <div class="row">
   <div class="col-md-6 col-md-offset-3">
@@ -21,7 +21,7 @@
       <%= f.label :password_confirmation, "Confirmation", class: "label-signup" %> <!--パスワード確認-->
       <%= f.password_field :password_confirmation, class: "form-control" %>
 
-      <%= f.submit "編集", class: "btn btn-primary btn-block btn-signup" %>
+      <%= f.submit :login, class: "btn btn-primary btn-block btn-signup" %>
     <% end %>
   </div>
 </div>
