@@ -14,7 +14,7 @@ class User < ApplicationRecord
                     # uniqueness: trueというオブションをvalidatesメソッドに指定。
                     # eメールなど一つしか存在しないものかを判定。
                     uniqueness: true
-  #affiliation（所属）が存在し、最大文字数は、５０文字以上まで
+  #affiliation（所属）が存在し、最大文字数は、５０文字まで
   validates :affiliation,  presence: true, length: { maximum: 50 }
   has_secure_password # AddPasswordDigestToUsersマイグレーションファイルに意味を記載。
   # 最小文字数（6文字以上は記入）、presence（存在の有無）、allow_nil: true（すでにログインしているので再度パスワードを打たなくえすむ）
