@@ -9,7 +9,7 @@ class SessionsController < ApplicationController
       # ログイン後にユーザー情報ページにリダイレクトします。
       log_in user # sessions_helper.rbにlog_inメソッドを定義してある。log_in(user)でもok。
       params[:session][:remember_me] == '1' ? remember(user) : forget(user)
-      redirect_to user # redirect_to(user)でもok。
+      redirect_back_or user
     else
       # ここにはエラーメッセージ用のflashを入れます。
       # flashのみだと再アクセスしない限りエラーメッセージが残ってしまうので、.nowをつける。
