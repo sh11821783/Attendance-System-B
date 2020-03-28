@@ -30,3 +30,32 @@
     vertical-align: middle;
   }  
 }
+
+/* 基本情報編集 */
+
+.label-basic-info {
+  margin-top: 5px;
+}
+
+.btn-basic-info {
+  margin: 15px 0;
+  width: 30%;
+}
+
+/* 検索フォーム */
+.form-right {
+  float: right;
+}
+
+#search {
+  position:relative;
+  background-color:#fff;
+  border:1px solid #aaa;
+  -webkit-border-radius:6px;
+  -moz-border-radius:6px;
+  -o-border-radius:6px;
+  -ms-border-radius:6px;
+  border-radius:6px;
+  width: 200px;
+  height: 2.5em;
+}

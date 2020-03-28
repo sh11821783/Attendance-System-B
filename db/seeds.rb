@@ -1,8 +1,7 @@
 # coding: utf-8
 
-User.create!(name: "Sample User",
+User.create!(name: "管理者",
              email: "sample_0@email.com",
-             affiliation: "affiliation",
              password: "password",
              password_confirmation: "password",
              # db/migrate/[timestamp]_add_admin_to_users.rbにadminをデフォルトでfalseにする。
@@ -11,11 +10,9 @@ User.create!(name: "Sample User",
 60.times do |n|
   name  = Faker::Name.name
   email = "sample-#{n+1}@email.com"
-  affiliation = "affiliation"
   password = "password"
   User.create!(name: name,
                email: email,
-               affiliation: affiliation,
                password: password,
                password_confirmation: password)
 end

@@ -1,24 +1,24 @@
 <% provide(:title, 'All Users') %>
-<h1>ユーザー一覧</h1>
-
+<h1>全てのユーザー</h1>
+<!--  検索拡張機能  -->
+  
 <div class="col-md-10 col-md-offset-1">
+  <div class="form-right">
+    <p>ユーザー名検索</p>
+    <%= form_tag(users_path, :method => 'get' ) do %>
+      <%= text_field_tag :search %><%= submit_tag '検索',class: "btn btn-primary", :name => nil %>
+    <% end %>
+  </div>
   <%= will_paginate %>
-  <table class="table table-condensed table-hover" id="table-users">
-    <thead>
-      <tr>
-        <th><%= User.human_attribute_name :name %></th>
-        <th></th>
-      </tr>
-    </thead>
-
+  <table class="table">
     <% @users.each do |user| %>
       <tr>
-        <td><%= link_to user.name, user %></td>
         <td>
+          <%= link_to user.name, user %>
           <% if current_user.admin? && !current_user?(user) %>
-            <%= link_to "削除", user, method: :delete,
-                data: { confirm: "削除してよろしいですか？" },
-                class: "btn btn-danger" %>
+            |  <%= link_to '基本情報編集', edit_basic_info_user_path(user) %>  |  <%= link_to '削除', user, method: :delete, data: { confirm: "削除してよろしいですか？" } %>
+          <% else %>
+            <% # %>
           <% end %>
         </td>
       </tr>

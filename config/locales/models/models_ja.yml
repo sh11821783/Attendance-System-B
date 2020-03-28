@@ -8,6 +8,8 @@ ja:
           name: 名前
           email: メールアドレス
           affiliation: 所属
+          basic_time: 基本時間 # 所定労働時間にあたります（例： 8時間）
+          work_time: 指定勤務時間 # 実労働時間にあたります（例： 7時間30分）
           password: パスワード
           password_confirmation: パスワード再入力
           created_at: 作成日

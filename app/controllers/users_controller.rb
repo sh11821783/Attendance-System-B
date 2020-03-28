@@ -1,12 +1,12 @@
 class UsersController < ApplicationController
-  # 共通している部分@user = User.find(params[:id])をまとめた
-  before_action :set_user, only: [:show, :edit, :update, :destroy]
+  # 共通している部分@user = User.find(params[:id])をまとめた。追加したedit_basic_infoとupdate_basic_infoをログインユーザーかつ管理権限者のみが実行できるようフィルタリング設定。
+  before_action :set_user, only: [:show, :edit, :update, :destroy, :edit_basic_info, :update_basic_info]
   # [:index, :show, :edit, :update, :destroy]にいく際は、すでにログインしているユーザーのみ
-  before_action :logged_in_user, only: [:index, :show, :edit, :update, :destroy]
+  before_action :logged_in_user, only: [:index, :show, :edit, :update, :destroy, :edit_basic_info, :update_basic_info]
   # 現在ログインしているユーザーのみ[:edit, :update]できる。
   before_action :correct_user, only: [:edit, :update]
   # :destroyに
-  before_action :admin_user, only: :destroy
+  before_action :admin_user, only: [:destroy, :edit_basic_info, :update_basic_info]
   
 
   
@@ -16,7 +16,7 @@ class UsersController < ApplicationController
   
   def index
     # @users = User.allから下記に置き換え
-    @users = User.paginate(page: params[:page]) # ページネーションを使う時に置き換え
+    @users = User.paginate(page: params[:page]).search(params[:search]) # 名前検索フォームに必須。
   end
   
   def show # ユーザー詳細
@@ -56,13 +56,30 @@ class UsersController < ApplicationController
     flash[:success] = "#{@user.name}のデータを削除しました。"
     redirect_to users_url
   end
+  
+  def edit_basic_info
+  end
 
+  def update_basic_info # 更新
+    if @user.update_attributes(basic_info_params)
+      # 更新成功時の処理
+      flash[:success] = "#{@user.name}の基本情報を更新しました。"
+    else
+      # 更新失敗時の処理
+      flash[:danger] = "#{@user.name}の更新は失敗しました。<br>" + @user.errors.full_messages.join("<br>")
+    end
+    redirect_to users_url
+  end
 
   
   private
     # ストロングパラメーター　⇨　permit内のカラムをそれぞれ許可し、それ以外は許可しないよう設定。
     def user_params
       params.require(:user).permit(:name, :email, :affiliation, :password, :password_confirmation)
+    end
+    
+    def basic_info_params
+      params.require(:user).permit(:department, :basic_time, :work_time)
     end
     
     # beforeフィルター

@@ -14,8 +14,12 @@ class User < ApplicationRecord
                     # uniqueness: trueというオブションをvalidatesメソッドに指定。
                     # eメールなど一つしか存在しないものかを判定。
                     uniqueness: true
-  #affiliation（所属）が存在し、最大文字数は、５０文字まで
-  validates :affiliation,  presence: true, length: { maximum: 50 }
+  #affiliation（所属）が存在し、2文字以上かつ30文字以下で設定
+  validates :affiliation, length: { in: 2..30 }, allow_blank: true # allow_blank: true　⇨　値が空文字""の場合バリデーションをスルー
+  # （基本時間）所定労働時間にあたります（例： 8時間）
+  validates :basic_time, presence: true
+  # （勤務時間）実労働時間にあたります（例： 7時間30分）
+  validates :work_time, presence: true
   has_secure_password # AddPasswordDigestToUsersマイグレーションファイルに意味を記載。
   # 最小文字数（6文字以上は記入）、presence（存在の有無）、allow_nil: true（すでにログインしているので再度パスワードを打たなくえすむ）
   validates :password, presence: true, length: { minimum: 6 }, allow_nil: true
@@ -52,5 +56,13 @@ class User < ApplicationRecord
   # ユーザーのログイン情報を破棄します。ユーザーがログアウトできるようにする。
   def forget
     update_attribute(:remember_digest, nil)
+  end
+  
+  def self.search(search) #ここでのself.はUser.を意味する
+    if search
+      where(['name LIKE ?', "%#{search}%"]) #検索とnameの部分一致を表示。User.は省略
+    else
+      all #全て表示。User.は省略
+    end
   end
 end

@@ -9,5 +9,11 @@ Rails.application.routes.draw do
   # createやdestroyには対応するビューが必要ないため、
   # ここでは指定せずにSessionsコントローラに直接追加
   
-  resources :users
+  resources :users do
+    # memberブロックをリソースブロックに追加する
+    member do
+      get 'edit_basic_info'
+      patch 'update_basic_info'
+    end
+  end
 end
