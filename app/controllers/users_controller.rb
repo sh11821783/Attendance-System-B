@@ -8,6 +8,8 @@ class UsersController < ApplicationController
   # :destroyに
   before_action :admin_user, only: [:destroy, :edit_basic_info, :update_basic_info]
   
+  before_action :set_one_month, only: :show
+  
 
   
   def new # ユーザー新規作成ページへ
@@ -21,6 +23,9 @@ class UsersController < ApplicationController
   
   def show # ユーザー詳細
     # @user = User.find(params[:id]),before_action :set_user
+    # @first_dayでは、まず当日を取得するためDate.currentを使用。
+    @first_day = Date.current.beginning_of_month # beginning_of_monthを繋げることで、当月の初日を取得することが可能。
+    @last_day = @first_day.end_of_month
   end
   
   def create # ユーザー新規作成ページから登録（保存）まで

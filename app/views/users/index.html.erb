@@ -1,7 +1,10 @@
 <% provide(:title, 'All Users') %>
-<h1>全てのユーザー</h1>
+<% if params[:search].blank?  %>
+  <h1>全てのユーザー</h1>
+  <% else %>
+  <h1>検索結果</h1>
+<% end %>
 <!--  検索拡張機能  -->
-  
 <div class="col-md-10 col-md-offset-1">
   <div class="form-right">
     <p>ユーザー名検索</p>

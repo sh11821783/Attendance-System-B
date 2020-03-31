@@ -1,4 +1,7 @@
 class User < ApplicationRecord
+  # UserモデルがAttendanceモデルに対して、1対多の関連性を示すコード(子)
+  # 多数所持するため、複数形
+  has_many :attendances, dependent: :destroy # Userモデルデータが削除されると、関連するAttendanceモデルのデータもまとめて削除される
   # 「remember_token」という仮想の属性を作成します。
   attr_accessor :remember_token
   # データベースでメールアドレスの大文字小文字を区別せず小文字として登録されるよう対応
