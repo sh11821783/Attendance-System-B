@@ -15,5 +15,8 @@ Rails.application.routes.draw do
       get 'edit_basic_info'
       patch 'update_basic_info'
     end
+    # onlyオプションで指定することで、updateアクション以外のルーティングを制限。
+    # 勤怠データは、アップデートのみ。
+    resources :attendances, only: :update # 
   end
 end

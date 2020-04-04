@@ -21,11 +21,8 @@ class UsersController < ApplicationController
     @users = User.paginate(page: params[:page]).search(params[:search]) # 名前検索フォームに必須。
   end
   
-  def show # ユーザー詳細
-    # @user = User.find(params[:id]),before_action :set_user
-    # @first_dayでは、まず当日を取得するためDate.currentを使用。
-    @first_day = Date.current.beginning_of_month # beginning_of_monthを繋げることで、当月の初日を取得することが可能。
-    @last_day = @first_day.end_of_month
+  def show # ユーザーの勤怠ページ
+    @worked_sum = @attendances.where.not(started_at: nil).count
   end
   
   def create # ユーザー新規作成ページから登録（保存）まで

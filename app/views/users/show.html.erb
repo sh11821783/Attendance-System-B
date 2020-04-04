@@ -2,18 +2,19 @@
 <div>
   <table class="table table-bordered table-condensed user-table">
     <tr>
-      <td><%= link_to "⇦", user_path(date: @first_day.prev_month) %>【<%= l(@first_day, format: :middle) %>】時間管理表 <%= link_to " ⇨", user_path(date: @first_day.next_month) , class: "btn" %> </td>
+      <td><%= link_to "⇦先月", user_path(date: @first_day.prev_month), class: "btn" %>【<%= l(@first_day, format: :middle) %>】時間管理表 <%= link_to "翌月⇨", user_path(date: @first_day.next_month) , class: "btn" %> </td>
       <!--app/helpers/users_helper.rbに定義済み-->
       <td>指定勤務時間 : <%= format_basic_info(@user.work_time) %></td>
       <!--app/helpers/users_helper.rbに定義済み-->
       <td>基本時間 : <%= format_basic_info(@user.basic_time) %></td>
-      <td>初日</td>
+      <!--app/helpers/attendances_helper.rbに定義済み-->
+      <td>初日<%= l(@first_day, format: :short) %></td>
     </tr>
 
     <tr>
       <td>所属 : <%= @user.affiliation.present? ? @user.affiliation : "未所属" %></td>
       <td>氏名 : <%= @user.name %></td>
-      <td>出勤日数</td>
+      <td>出勤日数 : <%= @worked_sum %>日</td>
       <td>絞め : <%= l(@last_day, format: :short) %></td> <!--config/locales/ja.ymlの40行目あたり-->
     </tr>
   </table>
@@ -25,34 +26,78 @@
       <tr>
         <th rowspan = "2">日付</th>
         <th rowspan = "2">曜日</th>
-        <th rowspan = "2">勤怠登録</th>
-        <th colspan = "2">出社</th>
-        <th colspan = "2">退社</th>
-        <th rowspan = "3">在社時間</th>
-        <th rowspan = "3">備考</th>
+        <th colspan = "3">出社</th>
+        <th colspan = "3">退社</th>
+        <th rowspan = "2">在社時間</th>
+        <th rowspan = "2">備考</th>
       </tr>
       <tr>
         <th>時</th>
         <th>分</th>
+        <th></th>
         <th>時</th>
         <th>分</th>
+        <th></th>
       </tr>
     </thead>
 
     <tbody>
       <!--(@first_day..@last_day) ⇨ 範囲オブジェクトとして扱う-->
       <!--(@first_day..@last_day) ⇨ 配列として扱う-->
-      <% (@first_day..@last_day).each do |day| %>
+      <% @attendances.each do |day| %>
         <tr>
-          <td><%= l(day, format: :short) %></td>
-          <td><%= $days_of_the_week[day.wday] %></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
+          <td><%= l(day.worked_on, format: :short) %></td>
+          <td><%= $days_of_the_week[day.worked_on.wday] %></td>
+          <!--attendances.helperで変換-->
+          <td><%= format_hour(day.started_at) if day.started_at.present? %></td>
+          <td><%= format_min(day.started_at) if day.started_at.present? %></td>
+          <td>
+            <!--現在の日 == 日付 && 出社時間が空なら”出勤ボタン”を出す。-->
+            <% if (Date.current == day.worked_on) && day.started_at.nil? %>
+              <%= link_to "出勤登録", user_attendance_path(@user, day), method: :patch, class: "btn btn-primary btn-attendance" %>
+            <% end %>
+          </td>
+          <!--もし、就業時間がある時、就業時間の時間を表示。attendannce_helperファイルに定義。-->
+          <td><%= format_hour(day.finished_at) if day.finished_at.present? %></td>
+          <!--もし、就業時間が、ある時、分単位を表示。attendannce_helperファイルに定義。-->
+          <td><%= format_min(day.finished_at) if day.finished_at.present? %></td> <!---->
+          <td>
+            <!--現在の日 == 日付 && 出社時間が空なら”出勤ボタン”を出す。-->
+            <% if (Date.current == day.worked_on) && day.finished_at.nil? %>
+              <%= link_to "退勤登録", user_attendance_path(@user, day), method: :patch, class: "btn btn-primary btn-attendance" %>
+            <% end %>
+          </td>
+          <td>
+            <!--もし、出勤時間があり、且つ、就業時間がある時-->
+            <% if day.started_at.present? && day.finished_at.present? %>
+              <!--勤務時間（出勤時間、就業時間）-->
+              <%= str_times = working_times(day.started_at, day.finished_at) %>
+              <% @total_working_times = @total_working_times.to_f + str_times.to_f %>
+            <% end %>
+          </td>
           <td></td>
         </tr>
       <% end %>
     </tbody>
+    
+    <tfoot>
+      <tr>
+        <td rowspan="2"></td>
+        <td rowspan="2"></td>
+        <td rowspan="2"></td>
+        <td rowspan="2"></td>
+        <td colspan="2">累計日数</td>
+        <td colspan="2">総合勤務時間</td>
+        <td colspan="2">累計在社時間</td>
+      </tr>
+      <tr>
+        <!--累計日数-->
+        <td colspan="2"><%= @attendances.count %></td>
+        <!--総合勤務時間-->
+        <td colspan="2"><%= format_basic_info(@user.work_time).to_f * @worked_sum %></td>
+        <!--累計在社時間-->
+        <td colspan="2"><%= format("%.2f", @total_working_times.to_f) %></td>
+      </tr>
+    </tfoot>
   </table>
 </div>
