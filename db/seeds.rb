@@ -1,7 +1,7 @@
 # coding: utf-8
 
 User.create!(name: "管理者",
-             email: "sample_0@email.com",
+             email: "sample-0@email.com",
              password: "password",
              password_confirmation: "password",
              # db/migrate/[timestamp]_add_admin_to_users.rbにadminをデフォルトでfalseにする。
