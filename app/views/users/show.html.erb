@@ -2,7 +2,7 @@
 <div>
   <table class="table table-bordered table-condensed user-table">
     <tr>
-      <td><%= link_to "⇦先月", user_path(date: @first_day.prev_month), class: "btn" %>【<%= l(@first_day, format: :middle) %>】時間管理表 <%= link_to "翌月⇨", user_path(date: @first_day.next_month) , class: "btn" %> </td>
+      <td><%= link_to "⇦前月", user_path(date: @first_day.prev_month), class: "btn" %>【<%= l(@first_day, format: :middle) %>】時間管理表 <%= link_to "次月⇨", user_path(date: @first_day.next_month) , class: "btn" %> </td>
       <!--app/helpers/users_helper.rbに定義済み-->
       <td>指定勤務時間 : <%= format_basic_info(@user.work_time) %></td>
       <!--app/helpers/users_helper.rbに定義済み-->
@@ -74,7 +74,7 @@
           <td><%= format_min(day.started_at) if day.started_at.present? %></td> <!---->
           <td colspan = "2">
             <!--現在の日 == 日付 && 出社時間が空なら”出勤ボタン”を出す。-->
-            <% if btn_text = attendance_state(day) %>
+            <% if btn_text = attendance_state(day) && day.started_at.blank? %>
               <%= link_to "出勤登録", user_attendance_path(@user, day), method: :patch, class: "btn btn-primary btn-attendance" %>
             <% end %>
           </td>
