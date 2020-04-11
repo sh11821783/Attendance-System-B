@@ -1,8 +1,10 @@
 class AttendancesController < ApplicationController
   before_action :set_user, only: [:edit_one_month, :update_one_month]
   before_action :logged_in_user, only: [:update, :edit_one_month]
-  before_action :admin_or_correct_user, only: [:update, :edit_one_month, :update_one_month]
+  before_action :admin_or_correct_user, only: [:edit, :update, :edit_one_month, :update_one_month]
   before_action :set_one_month, only: :edit_one_month
+  before_action :finished_at_is_invalid?, only: :update_one_month
+  
 
   UPDATE_ERROR_MSG = "勤怠登録に失敗しました。やり直してください。"
   
@@ -42,7 +44,7 @@ class AttendancesController < ApplicationController
       attendance.update_attributes!(item) # ここにトランザクションを適用。
       end
     end
-    # 全ての繰り返し処理が問題なく完了した時は、以下２行の処理が実行される。
+    # 全ての繰り返し処理が問題なく完了した時は、下記の部分の処理が適用されます。
     flash[:success] = "1ヶ月分の勤怠情報を更新しました。"
     redirect_to user_url(date: params[:date])
   # トランザクションによる例外処理の分岐を以下に記述。
@@ -66,5 +68,18 @@ class AttendancesController < ApplicationController
         flash[:danger] = "編集権限がありません。"
         redirect_to(root_url)
       end  
+    end
+    
+    def finished_at_is_invalid?
+      attendances_params.each do |id, item|
+        # .blank? ⇨ 値が空?の場合、true   .present? ⇨ 値がある?場合、true
+        if item[:started_at].present? && item[:finished_at].blank?
+          flash[:danger] = "退勤時間を入力して下さい。"
+          redirect_to attendances_edit_one_month_user_url(date: params[:date]) and return
+        elsif  item[:started_at].blank? && item[:finished_at].present?
+          flash[:danger] = "出勤時間を入力して下さい。"
+          redirect_to attendances_edit_one_month_user_url(date: params[:date]) and return
+        end
+      end
     end
 end

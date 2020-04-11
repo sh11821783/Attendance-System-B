@@ -31,8 +31,8 @@
             <tr>
               <td><%= l(day.worked_on, format: :short) %></td>
               <td class="<%= css_class %>"><%= $days_of_the_week[day.worked_on.wday] %></td>
-              <!--もし、現在のユーザーが管理権限者では無く、且つ、現在の勤怠の日より日付が大きい時は-->
-              <% if !current_user.admin? && (Date.current < day.worked_on) %>
+              <!--もし、現在のユーザー、且つ、現在の勤怠の日より日付が大きい時は-->
+              <% if current_user && (Date.current < day.worked_on) %>
               <!--出勤時間と退社時間を操作出来ないようにする。-->
                 <td><%= attendance.time_field :started_at, readonly: true, class: "form-control" %></td>
                 <td><%= attendance.time_field :finished_at, readonly: true, class: "form-control" %></td>
